@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+app:
+  observability:
+    hello:
+      # Flip to false (or set APP_OBSERVABILITY_HELLO_ENABLED=false) to skip
+      # registering the node-timing hook on the hello graph.
+      enabled: true
+    ticket:
+      # Flip to false (or set APP_OBSERVABILITY_TICKET_ENABLED=false) to skip
+      # registering the node-timing + edge-routing hooks on the ticket graph.
+      enabled: true
+
+spring:
+  application:
+    name: km-langgraph4j-springai
+  ai:
+    ollama:
+      # In docker-compose this resolves to the "ollama" service; override with
+      # OLLAMA_BASE_URL=http://localhost:11434 when running the jar directly
+      # against a locally installed Ollama.
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      init:
+        # Pulls the model automatically on first boot if it isn't cached yet.
+        pull-model-strategy: when_missing
+      chat:
+        options:
+          model: ${OLLAMA_MODEL:qwen2.5:7b}
+          temperature: 0.2
+
+    # --- OpenAI alternative (see pom.xml comment) ---
+    # openai:
+    #   api-key: ${OPENAI_API_KEY}
+    #   chat:
+    #     options:
+    #       model: gpt-4o-mini
+    #       temperature: 0.2
+
+logging:
+  level:
+    com.km.langgraph4j: INFO
+    org.bsc.langgraph4j: INFO
